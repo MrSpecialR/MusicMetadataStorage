@@ -5,9 +5,10 @@ const PlaylistsController = require('../controllers/PlaylistsController');
 const auth = require('./auth');
 
 module.exports = (app) => {
-  app.get('/all', auth.UserRoute, SongsController.allSongsGet);
   app.post('/login', UsersController.loginPost);
   app.post('/register', UsersController.registerPost);
+
+  app.get('/all', auth.UserRoute, SongsController.allSongsGet);
   app.get('/song/:id', auth.UserRoute, SongsController.songGet);
   app.put('/song/:id', auth.UserRoute, SongsController.songPut);
   app.delete('/song/:id', auth.UserRoute, SongsController.songDelete);
@@ -18,5 +19,7 @@ module.exports = (app) => {
   app.get('/user/playlists', PlaylistsController.getUserPlaylists);
   app.get('/user/songs', SongsController.getUserSongs);
   app.post('/playlist/:id', PlaylistsController.addToPlaylist);
+  app.get('/playlist/:id', PlaylistsController.getPlaylist);
   app.post('/playlist', PlaylistsController.createPlaylist);
+  app.get('/playlist/:id/available', PlaylistsController.getAvailableSongsToAddToPlaylist);
 };

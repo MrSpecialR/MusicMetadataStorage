@@ -38,7 +38,9 @@ let SongDetails = (props) => {
         Artist: {props.artist} <br />
         Original File Name: {props.originalName} <br />
       </p>
-      <Link to='/songs/all' className='btn btn-primary'>Back to listing</Link>
+      <Link to='/songs/all' className='btn btn-primary'>Back to listing</Link>&nbsp;
+      <Link to={'/songs/edit/' + props._id} className='btn btn-success'>Edit</Link>&nbsp;
+      <Link to={'/songs/delete/' + props._id} className='btn btn-danger'>Delete</Link>&nbsp;
       <p class='text-right'>Uploaded {calcTime(props.uploadDate)} ago</p>
     </div>
   );

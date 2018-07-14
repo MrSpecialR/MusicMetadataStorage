@@ -1,15 +1,19 @@
 import React from 'react';
 import { Form, Text } from 'informed';
 import { BASE_URL } from '../../utilities/constants';
+import observer from '../../utilities/observer';
 import axios from 'axios';
 
 let onSubmit = (data, props) => {
+  if (!data.title || !data.title.trim()) {
+    observer.showNotification(400, 'You must give a title!');
+    return;
+  }
   axios.post(BASE_URL + '/playlist',
     data,
     { headers: { 'Authorization': sessionStorage.getItem('authtoken') } }
   ).then(res => {
-    console.log(res);
-    props.history.push('/');
+    props.history.push('/playlists/details/' + res.data._id);
   });
 };
 

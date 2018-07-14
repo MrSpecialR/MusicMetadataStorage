@@ -1,11 +1,12 @@
 const Song = require('mongoose').model('Song');
+const Playlist = require('mongoose').model('Playlist');
 const path = require('path');
 const formidable = require('formidable');
 const fs = require('fs');
 const id3 = require('node-id3');
 
 module.exports.allSongsGet = (req, res) => {
-  Song.find({ $or: [{ isPublic: true }, { user: req.user.id }] }).sort({ uploadDate: -1 }).populate('user').then(songs => {
+  Song.find({ $or: [{ isPublic: true }, { user: req.user.id }] }).sort({ uploadDate: -1 }).populate('user', '_id username').then(songs => {
     res.json(songs);
   });
 };
@@ -26,24 +27,31 @@ module.exports.songFileGet = (req, res) => {
 
     let songPath = path.join(__dirname, `../uploads/songs/${id}.mp3`);
     res.sendFile(songPath);
-  }).catch(err => {
-    console.log(err);
+  }).catch(_ => {
     res.sendStatus(400);
   });
 };
 
 module.exports.songDelete = (req, res) => {
-  if (req.user.id !== req.params.id && !req.user.isAdmin) {
-    res.sendStatus(401);
-    return;
-  }
-  Song.deleteOne({_id: req.params.id})
-    .then(song => {
-      res.json(song);
-    })
-    .catch(err => {
-      res.status(500).send(JSON.stringify(err));
+  Song.findById(req.params.id).then(found => {
+    if (!found.user.equals(req.user.id) && !req.user.isAdmin) {
+      res.sendStatus(401);
+      return;
+    }
+    Playlist.find({ _id: { $in: found.playlists } }).then(playlists => {
+      for (let playlist of playlists) {
+        playlist.songs = playlist.songs.filter(s => !s.equals(found._id));
+        playlist.save();
+      }
+      Song.deleteOne({ _id: req.params.id })
+        .then(song => {
+          res.json(song);
+        })
+        .catch(_ => {
+          res.sendStatus(500);
+        });
     });
+  });
 };
 
 module.exports.getImage = (req, res) => {
@@ -63,7 +71,7 @@ module.exports.postImage = (req, res) => {
   form.uploadDir = path.join(__dirname, '../uploads/songs');
   form.keepExtensions = true;
 
-  form.parse(req, (err, fields, {file}) => {
+  form.parse(req, (err, fields, { file }) => {
     if (err) {
       console.log(err);
       res.sendStatus(400);
@@ -92,7 +100,7 @@ module.exports.songPost = (req, res) => {
   form.uploadDir = path.join(__dirname, '../uploads/songs');
   form.keepExtensions = true;
 
-  form.parse(req, (err, fields, {file}) => {
+  form.parse(req, (err, fields, { file }) => {
     if (err) {
       console.log(err);
       res.sendStatus(400);
@@ -110,7 +118,7 @@ module.exports.songPost = (req, res) => {
         year: tags.year,
         originalName: file.name,
         hasImage: tags.image !== undefined,
-        isPublic: Boolean(fields.checkbox)
+        isPublic: fields.checkbox !== 'false'
       };
       Song.create(song).then(newSong => {
         let newPath = path.dirname(file.path) + '/' + newSong.id + '.mp3';
@@ -132,7 +140,7 @@ module.exports.songPut = (req, res) => {
   let userid = req.user.id;
   let songId = req.body.song._id;
   Song.findById(songId, (err, song) => {
-    if (err || song.user != userid) {
+    if (err || !song.user.equals(userid)) {
       res.sendStatus(403);
       return;
     }
@@ -162,7 +170,7 @@ module.exports.songPut = (req, res) => {
 };
 
 module.exports.getUserSongs = (req, res) => {
-  Song.find({ user: req.user.id }).sort({ uploadDate: -1 }).populate('user').then(songs => {
+  Song.find({ user: req.user.id }).sort({ uploadDate: -1 }).populate('user', '_id username').then(songs => {
     res.json(songs);
   });
 };

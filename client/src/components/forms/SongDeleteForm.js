@@ -43,7 +43,7 @@ class SongDeleteForm extends Component {
     console.log(this.state);
     return (
       <div className='container'>
-        <h2>Delete Song Metadata</h2>
+        <h2>Delete Song</h2>
         <hr />
         <form>
           <div className='col-md-6'>

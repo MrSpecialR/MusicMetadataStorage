@@ -7,14 +7,12 @@ class PlaylistListing extends Component {
     return (
       <tr>
         <td>{this.props.title}</td>
-        <td>{this.props.songs.length}</td>
-        <PlaylistPlayer songs={this.props.songs} />
+        <PlaylistPlayer key={'player-' + this.props._id} getChangeSongFunction={this.props.getChangeSongFunction} onSongChange={this.props.onSongChange} songs={this.props.songs} />
         <td>
-          <span>
-            <Link to={'/songs/details/' + this.props._id} className='btn btn-primary btn-sm'>Details</Link></span>
+          <Link to={'/playlists/details/' + this.props._id} className='btn btn-primary'>Details</Link>
         </td>
         <td>
-          <Link to={'/songs/edit/' + this.props._id} className='btn btn-success btn-sm'>Edit</Link>
+          <Link to={'/playlists/songs/add/' + this.props._id} className='btn btn-success'>Add Songs</Link>
         </td>
       </tr>
     );

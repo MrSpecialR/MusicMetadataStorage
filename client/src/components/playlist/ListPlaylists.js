@@ -15,10 +15,10 @@ class ListPlaylists extends Component {
                 Name
               </th>
               <th>
-                Number of songs
+                #
               </th>
               <th>
-                #
+                Number of songs
               </th>
               <th>
                 <span className='text-center pagination-centered'>Current Song</span>
@@ -34,7 +34,7 @@ class ListPlaylists extends Component {
 
           <tbody>
             {this.props.playlists.map(playlist => {
-              return <PlaylistListing key={playlist._id} {...playlist} />;
+              return <PlaylistListing getChangeSongFunction={this.props.getChangeSongFunction} onSongChange={this.props.onSongChange} key={'playlist-entry-' + playlist._id} {...playlist} />;
             })}
           </tbody>
         </table>

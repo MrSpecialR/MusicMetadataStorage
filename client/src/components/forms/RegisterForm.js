@@ -14,8 +14,6 @@ let onSubmit = (data, props) => {
 
       props.history.push('/');
     }).catch(err => {
-      console.log(err);
-      debugger
       if (err.response.status === 409) {
         observer.showNotification(err.response.status, 'User with given username already exists');
         return;
@@ -31,8 +29,7 @@ let RegisterForm = (props) => (
     <Form>
       {({ formState }) => (
         <div className='col-md-6'>
-
-          <div htmlFor='form-group row'>
+          <div className='form-group row'>
             <label htmlFor='username' className='col-2 col-form-label'>Username</label>
             <div className='col-10'>
               <Text field='username' type='text' name='username' id='username' className='form-control' />

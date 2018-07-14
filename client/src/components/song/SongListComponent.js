@@ -15,13 +15,13 @@ class SongListItem extends Component {
         <td><AudioWrapper id={this.props._id} /></td>
         <td>
           <span>
-            <Link to={'/songs/details/' + this.props._id} className='btn btn-primary btn-sm'>Details</Link></span>
+            <Link to={'/songs/details/' + this.props._id} className='btn btn-primary'>Details</Link></span>
         </td>
         <td>
-          {currentUser === this.props.user.username ? <Link to={'/songs/edit/' + this.props._id} className='btn btn-success btn-sm'>Edit</Link> : ''}
+          {currentUser === this.props.user.username ? <Link to={'/songs/edit/' + this.props._id} className='btn btn-success'>Edit</Link> : ''}
         </td>
         <td>
-          {currentUser === this.props.user.username ? <Link to={'/songs/delete/' + this.props._id} className='btn btn-danger btn-sm'>Delete</Link> : ''}
+          {currentUser === this.props.user.username ? <Link to={'/songs/delete/' + this.props._id} className='btn btn-danger'>Delete</Link> : ''}
         </td>
       </tr>
     );

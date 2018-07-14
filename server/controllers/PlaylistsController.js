@@ -30,3 +30,19 @@ module.exports.getUserPlaylists = (req, res) => {
     res.json(playlists);
   });
 };
+
+module.exports.getAvailableSongsToAddToPlaylist = (req, res) => {
+  Playlist.findById(req.params.id).then(playlist => {
+    console.log(req.user.id);
+    Song.find({ $or: [{ isPublic: true }, { user: req.user.id }] }).where('_id').nin(playlist.songs).sort({ uploadDate: -1 }).select('title _id isPublic').then(songs => {
+      console.log(songs);
+      res.json(songs);
+    });
+  });
+};
+
+module.exports.getPlaylist = (req, res) => {
+  Playlist.findById(req.params.id).populate('songs').then(playlist => {
+    res.json(playlist);
+  });
+};

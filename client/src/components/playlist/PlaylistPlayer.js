@@ -6,8 +6,8 @@ class PlaylistListing extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      songIndex: 0,
-      songTitle: ''
+      songIndex: -1,
+      song: { data: { title: '' } }
     };
 
     this.audio = React.createRef();
@@ -15,10 +15,35 @@ class PlaylistListing extends Component {
     this.changeSong = this.changeSong.bind(this);
     this.playNext = this.playNext.bind(this);
     this.playPrevious = this.playPrevious.bind(this);
+    this.onPause = this.onPause.bind(this);
+    this.onPlay = this.onPlay.bind(this);
   }
 
   componentDidMount () {
-    this.changeSong(0);
+    axios.get(BASE_URL + '/song/' + this.props.songs[0],
+      {
+        headers: { 'Authorization': sessionStorage.getItem('authtoken') }
+      }).then(res => {
+      this.setState({
+        song: res,
+        songIndex: 0
+      });
+    });
+    if (this.props.getChangeSongFunction) {
+      this.props.getChangeSongFunction(this.changeSong);
+    }
+  }
+
+  onPlay () {
+    if (this.props.onSongChange) {
+      this.props.onSongChange(this.state.song, true);
+    }
+  }
+
+  onPause () {
+    if (this.props.onSongChange) {
+      this.props.onSongChange(this.state.song, false);
+    }
   }
 
   playNext () {
@@ -40,6 +65,14 @@ class PlaylistListing extends Component {
   }
 
   changeSong (songIndex) {
+    if (songIndex === this.state.songIndex) {
+      if (this.audio.current.paused) {
+        this.audio.current.play();
+      } else {
+        this.audio.current.pause();
+      }
+      return;
+    }
     if (this.props.songs.length > 0 && songIndex >= 0 && this.props.songs.length > this.state.songIndex) {
       axios.get(BASE_URL + '/song/' + this.props.songs[songIndex],
         {
@@ -47,10 +80,11 @@ class PlaylistListing extends Component {
         }).then(res => {
         this.setState({
           songIndex: songIndex,
-          songTitle: res.data.title
+          song: res
         }, () => {
-          if (this.state.songIndex !== 0) {
-            this.audio.current.play();
+          this.audio.current.play();
+          if (this.props.onSongChange) {
+            this.props.onSongChange(res);
           }
         });
       });
@@ -58,19 +92,21 @@ class PlaylistListing extends Component {
   }
 
   render () {
+
     return (
       <React.Fragment>
         <td>
-          {this.state.songIndex + 1}
+          {this.props.songs.length === 0 ? '-' : this.state.songIndex + 1}
         </td>
+        <td>{this.props.songs.length}</td>
         <td>
-          {this.state.songTitle}
+          {this.state.song.data ? this.state.song.data.title : ''}
         </td>
         <td>
           <button onClick={this.playPrevious} className='btn btn-light'>Previous</button>
         </td>
         <td>
-          <audio ref={this.audio} onEnded={(e) => {
+          <audio ref={this.audio} onPlay={this.onPlay} onPause={this.onPause} onEnded={(e) => {
             this.playNext();
             e.target.play();
           }} controls src={BASE_URL + '/file/' + this.props.songs[this.state.songIndex]} />

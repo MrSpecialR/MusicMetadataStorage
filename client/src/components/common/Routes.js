@@ -14,6 +14,8 @@ import CreatePlaylistForm from '../forms/CreatePlaylistForm';
 import UserSongsPage from '../../pages/UserSongsPage';
 import PlaylistsPage from '../../pages/PlaylistsPage';
 import WelcomePage from '../../pages/WelcomePage';
+import AddSongsToPlaylistForm from '../forms/AddSongsToPlaylistForm';
+import PlaylistDetailsPage from '../../pages/PlaylistDetailsPage';
 
 let UserRoute = (props) => {
   return <Route {...props} component={(compProps) => {
@@ -23,7 +25,7 @@ let UserRoute = (props) => {
 
 let AdminRoute = (props) => {
   return <Route {...props} component={(compProps) => {
-    return props.isAdmin ? <props.component {...compProps} /> : <Redirect to='/login' />; // Should go to homepage
+    return props.isAdmin ? <props.component {...compProps} /> : <Redirect to='/' />; // Should go to homepage
   }} />;
 };
 
@@ -62,6 +64,8 @@ class Routes extends Component {
         <UserRoute user={this.state.user} exact path='/songs/edit/:id' component={SongEditForm} />
         <UserRoute user={this.state.user} exact path='/songs/delete/:id' component={SongDeleteForm} />
         <UserRoute user={this.state.user} exact path='/songs/upload' component={UploadForm} />
+        <UserRoute user={this.state.user} exact path='/playlists/songs/add/:id' component={AddSongsToPlaylistForm} />
+        <UserRoute user={this.state.user} exact path='/playlists/details/:id' component={PlaylistDetailsPage} />
       </div>
     );
   }
