@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+
 import { BASE_URL } from '../../utilities/constants';
+import observer from '../../utilities/observer';
 
 class SongEditForm extends Component {
   constructor (props) {
@@ -28,6 +30,8 @@ class SongEditForm extends Component {
       .then(res => {
         console.log(res);
         this.props.history.push('/songs/details/' + this.state.song._id);
+      }).catch(_ => {
+        observer.showNotification(403, 'You are unauthorized to edit this song.');
       });
   }
 
@@ -103,7 +107,7 @@ class SongEditForm extends Component {
               <div className='col-10'>
                 <div className='form-check'>
                   <input checked={this.state.song.isPublic} onChange={this.handleCheckboxChange} className='form-check-input' type='checkbox' value={this.state.song.isPublic} id='checkbox' />
-                  <label class='form-check-label' htmlFor='checkbox'>Is Song Public?</label>
+                  <label className='form-check-label' htmlFor='checkbox'>Is Song Public?</label>
                 </div>
               </div>
             </div>

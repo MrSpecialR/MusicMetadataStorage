@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { BASE_URL } from '../../utilities/constants';
 
 class AudioWrapper extends Component {

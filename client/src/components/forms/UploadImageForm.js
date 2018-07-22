@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+
 import { BASE_URL } from '../../utilities/constants';
+import observer from '../../utilities/observer';
 
 export default class UploadForm extends Component {
   constructor (props) {
@@ -15,6 +17,10 @@ export default class UploadForm extends Component {
 
   handleSubmit (e) {
     e.preventDefault();
+    if (!this.state.file) {
+      observer.showNotification(400, 'You need to provide a .jpg file!');
+      return;
+    }
     let fd = new FormData();
     fd.append('file', this.state.file, this.state.file.name);
     axios({

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import SongListComponent from './SongListComponent';
 import { Link } from 'react-router-dom';
+
+import SongListComponent from './SongListComponent';
 
 class SongListings extends Component {
   render () {

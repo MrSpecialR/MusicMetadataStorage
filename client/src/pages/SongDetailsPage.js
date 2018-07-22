@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import SongDetails from '../components/song/SongDetails';
 import axios from 'axios';
+
+import SongDetails from '../components/song/SongDetails';
 import { BASE_URL } from '../utilities/constants';
+
 class SongDetailsPage extends Component {
   constructor (props) {
     super(props);
@@ -22,6 +24,9 @@ class SongDetailsPage extends Component {
   }
 
   render () {
+    if (!this.state.song) {
+      return <div />;
+    }
     return <SongDetails {...this.state.song} />;
   }
 }

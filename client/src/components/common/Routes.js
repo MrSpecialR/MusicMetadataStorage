@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+
+import observer from '../../utilities/observer';
+
+import WelcomePage from '../../pages/WelcomePage';
 import LoginForm from '../forms/LoginForm';
-import { Route, Redirect } from 'react-router-dom';
-import UploadForm from '../forms/UploadForm';
 import RegisterForm from '../forms/RegisterForm';
 import Logout from '../forms/Logout';
-import observer from '../../utilities/observer';
+
+import UploadForm from '../forms/UploadForm';
 import SongListPage from '../../pages/SongListPage';
 import SongDetailsPage from '../../pages/SongDetailsPage';
 import UploadImageForm from '../forms/UploadImageForm';
@@ -13,19 +17,25 @@ import SongDeleteForm from '../forms/SongDeleteForm';
 import CreatePlaylistForm from '../forms/CreatePlaylistForm';
 import UserSongsPage from '../../pages/UserSongsPage';
 import PlaylistsPage from '../../pages/PlaylistsPage';
-import WelcomePage from '../../pages/WelcomePage';
 import AddSongsToPlaylistForm from '../forms/AddSongsToPlaylistForm';
 import PlaylistDetailsPage from '../../pages/PlaylistDetailsPage';
+import NotFoundPage from '../../pages/NotFoundPage';
 
 let UserRoute = (props) => {
   return <Route {...props} component={(compProps) => {
+    if (!props.user) {
+      observer.showNotification(401, 'Login or register to be able to view this page!');
+    }
     return props.user ? <props.component {...compProps} /> : <Redirect to='/login' />;
   }} />;
 };
 
 let AdminRoute = (props) => {
   return <Route {...props} component={(compProps) => {
-    return props.isAdmin ? <props.component {...compProps} /> : <Redirect to='/' />; // Should go to homepage
+    if (!props.isAdmin) {
+      observer.showNotification(401, 'You are not authorized to view this page!');
+    }
+    return props.isAdmin ? <props.component {...compProps} /> : <Redirect to='/' />;
   }} />;
 };
 
@@ -36,6 +46,7 @@ class Routes extends Component {
       isAdmin: false,
       user: null
     };
+
     this.loginUser = this.loginUser.bind(this);
     observer.subscribe(observer.events.loginUser, this.loginUser);
   }
@@ -49,7 +60,7 @@ class Routes extends Component {
 
   render () {
     return (
-      <div>
+      <Switch>
         <Route user={this.state.user} path='/' exact component={WelcomePage} />
         <Route path='/login' exact component={LoginForm} />
         <Route path='/register' exact component={RegisterForm} />
@@ -66,8 +77,11 @@ class Routes extends Component {
         <UserRoute user={this.state.user} exact path='/songs/upload' component={UploadForm} />
         <UserRoute user={this.state.user} exact path='/playlists/songs/add/:id' component={AddSongsToPlaylistForm} />
         <UserRoute user={this.state.user} exact path='/playlists/details/:id' component={PlaylistDetailsPage} />
-      </div>
+
+        <Route component={NotFoundPage} />
+      </Switch>
     );
   }
 }
+
 export default Routes;

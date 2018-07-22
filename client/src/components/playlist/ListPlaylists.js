@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import PlaylistListing from './PlaylistListing';
 import { Link } from 'react-router-dom';
+
+import PlaylistListing from './PlaylistListing';
 
 class ListPlaylists extends Component {
   render () {

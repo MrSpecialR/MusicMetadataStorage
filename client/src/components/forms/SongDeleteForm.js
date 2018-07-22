@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+
 import { BASE_URL } from '../../utilities/constants';
+import observer from '../../utilities/observer';
 
 class SongDeleteForm extends Component {
   constructor (props) {
@@ -25,6 +27,8 @@ class SongDeleteForm extends Component {
       })
       .then(res => {
         this.props.history.push('/songs/all');
+      }).catch(_ => {
+        observer.showNotification(403, 'You are unauthorized to delete this song.');
       });
   }
 
@@ -79,9 +83,9 @@ class SongDeleteForm extends Component {
             </div>
             <div className='form-group row'>
               <div className='col-10'>
-                <div class='form-check'>
-                  <input disabled class='form-check-input' type='checkbox' value={this.state.song.isPublic} checked={this.state.song.isPublic} id='checkbox' />
-                  <label class='form-check-label' for='checkbox'>Is Song Public?</label>
+                <div className='form-check'>
+                  <input disabled className='form-check-input' type='checkbox' checked={this.state.song.isPublic} id='checkbox' />
+                  <label className='form-check-label' htmlFor='checkbox'>Is Song Public?</label>
                 </div>
               </div>
             </div>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import ListPlaylists from '../components/playlist/ListPlaylists';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+
+import ListPlaylists from '../components/playlist/ListPlaylists';
 import { BASE_URL } from '../utilities/constants';
 
 class PlaylistDetailsPage extends Component {
@@ -15,6 +17,7 @@ class PlaylistDetailsPage extends Component {
     this.getPlaylist = this.getPlaylist.bind(this);
     this.onSongChange = this.onSongChange.bind(this);
     this.getChangeSongFunction = this.getChangeSongFunction.bind(this);
+    this.shufflePlaylist = this.shufflePlaylist.bind(this);
   }
 
   getPlaylist () {
@@ -40,12 +43,27 @@ class PlaylistDetailsPage extends Component {
     });
   }
 
+  shufflePlaylist () {
+    if (this.state.playlist.songs.length > 0) {
+      this.setState(prevState => {
+        let length = prevState.playlist.songs.length;
+        for (let i = 0; i < length; ++i) {
+          let indexToSwap = Math.floor(Math.random() * Math.floor(length - i - 1));
+          let temp = prevState.playlist.songs[indexToSwap];
+          prevState.playlist.songs[indexToSwap] = prevState.playlist.songs[length - i - 1];
+          prevState.playlist.songs[length - i - 1] = temp;
+        }
+        return prevState;
+      }, () => {
+        this.onSongChange({ data: this.state.playlist.songs[0] });
+      });
+    }
+  }
+
   // This is not really good structure wise, but it'll do the job
   getChangeSongFunction (changeFunc) {
     this.setState({
       changeSong: changeFunc
-    }, () => {
-      console.log(this.state);
     });
   }
 
@@ -59,6 +77,7 @@ class PlaylistDetailsPage extends Component {
     return (
       <div className='container'>
         <ListPlaylists getChangeSongFunction={this.getChangeSongFunction} playlists={playlist} onSongChange={this.onSongChange} />
+        <button onClick={this.shufflePlaylist} className='btn btn-default'>Shuffle</button>
         <table className='table'>
           <thead>
             <tr>
@@ -92,7 +111,8 @@ class PlaylistDetailsPage extends Component {
                       this.state.changeSong(i);
                     }} className='btn btn-warning'>Pause</button> : <button onClick={() => {
                       this.state.changeSong(i);
-                    }} className='btn btn-info'>Play</button>}
+                    }} className='btn btn-info'>Play</button>}&nbsp;
+                    <Link className='btn btn-primary' to={'/songs/details/' + s._id} >Details</Link>
                   </td>
                 </tr>
               );

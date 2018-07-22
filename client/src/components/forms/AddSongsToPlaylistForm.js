@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import { Form, Select, Option } from 'informed';
+
 import { BASE_URL } from '../../utilities/constants';
+import observer from '../../utilities/observer';
 import axios from 'axios';
 
 let onSubmit = (data, props) => {
+  console.log(data);
+  if (!data.songs) {
+    observer.showNotification(400, 'You need to select songs to add!');
+    return;
+  }
   axios.post(BASE_URL + '/playlist/' + props.match.params.id,
     data,
     { headers: { 'Authorization': sessionStorage.getItem('authtoken') } }
@@ -44,7 +51,7 @@ class AddSongsToPlaylistForm extends Component {
               <div className='form-group row'>
                 <label className='col-2 col-form-label' htmlFor='songs'>Songs</label>
                 <div className='col-10'>
-                  <Select field='songs' multiple class='form-control' id='songs' name='songs'>
+                  <Select field='songs' multiple className='form-control' id='songs' name='songs'>
                     {this.state.songs.map(s => <Option key={s._id} value={s._id}>{s.title}</Option>)}
                   </Select>
                 </div>

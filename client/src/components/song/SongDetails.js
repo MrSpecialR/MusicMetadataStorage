@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 import AudioWrapper from './AudioWrapper';
 import { BASE_URL } from '../../utilities/constants';
 
@@ -23,11 +24,11 @@ let calcTime = (dateIsoFormat) => {
 };
 
 let SongDetails = (props) => {
-  console.log(props);
+  let currentUser = sessionStorage.getItem('username');
   return (
-    <div class='col-12'>
+    <div className='col-12'>
       <Link to={'/songs/' + props._id + '/image/upload'}>
-        <img class='img-thumbnail' src={BASE_URL + '/image/' + props._id} alt='Click here to upload an image' />
+        <img className='img-thumbnail' src={BASE_URL + '/image/' + props._id} alt='Click here to upload album art' />
       </Link>
       <h2>
         {props.artist} - {props.title}
@@ -36,12 +37,15 @@ let SongDetails = (props) => {
         <AudioWrapper id={props._id} /> <br />
         Album: {props.album} <br />
         Artist: {props.artist} <br />
+        Year: {props.year} <br />
         Original File Name: {props.originalName} <br />
+        Uploader: {props.user.username} <br />
       </p>
       <Link to='/songs/all' className='btn btn-primary'>Back to listing</Link>&nbsp;
-      <Link to={'/songs/edit/' + props._id} className='btn btn-success'>Edit</Link>&nbsp;
+      {currentUser === props.user.username ? <Link to={'/songs/edit/' + props._id} className='btn btn-success'>Edit</Link> : ''}&nbsp;
       <Link to={'/songs/delete/' + props._id} className='btn btn-danger'>Delete</Link>&nbsp;
-      <p class='text-right'>Uploaded {calcTime(props.uploadDate)} ago</p>
+      <a href={BASE_URL + '/file/' + props._id} className='btn btn-info'>Download </a>
+      <p className='text-right'>Uploaded {calcTime(props.uploadDate)} ago</p>
     </div>
   );
 };

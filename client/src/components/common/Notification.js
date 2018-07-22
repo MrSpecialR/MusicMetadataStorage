@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import observer from '../../utilities/observer';
 
 const INITIAL_STATE = {

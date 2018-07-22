@@ -13,7 +13,8 @@ module.exports.allSongsGet = (req, res) => {
 
 module.exports.songGet = (req, res) => {
   let id = req.params.id;
-  Song.findById(id).then(song => {
+  Song.findById(id).populate('user', '_id username').then(song => {
+    console.log(song);
     res.json(song);
   });
 };
@@ -23,7 +24,7 @@ module.exports.songFileGet = (req, res) => {
   Song.findById(id).then(song => {
     res.setHeader('Content-Disposition', 'attachment; filename=' + song.originalName);
     res.setHeader('Content-Transfer-Encoding', 'binary');
-    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Type', 'audio/mpeg');
 
     let songPath = path.join(__dirname, `../uploads/songs/${id}.mp3`);
     res.sendFile(songPath);

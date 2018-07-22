@@ -53,18 +53,3 @@ class UserNavigation extends Component {
 }
 
 export default UserNavigation;
-/*
-                login
-                @if (User.IsInRole(GlobalConstants.AdministratorRole))
-                {
-                    <li className='nav-item dropdown active'>
-                        <Link className='nav-link dropdown-toggle' href='http://example.com' id='navbarDropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                            Administrator
-                        </Link>
-                        <div className='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>
-                            <Link className='dropdown-item' asp-area='Administrator' asp-controller='User' asp-action='All'>Users</Link>
-                            <Link className='dropdown-item' asp-area='Administrator' asp-controller='Category' asp-action='All'>Categories</Link>
-                        </div>
-                    </li>
-                }
-*/

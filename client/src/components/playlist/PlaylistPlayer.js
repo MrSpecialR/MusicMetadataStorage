@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { BASE_URL } from '../../utilities/constants';
 import axios from 'axios';
+
+import { BASE_URL } from '../../utilities/constants';
 
 class PlaylistListing extends Component {
   constructor (props) {
@@ -92,7 +93,6 @@ class PlaylistListing extends Component {
   }
 
   render () {
-
     return (
       <React.Fragment>
         <td>
@@ -109,7 +109,7 @@ class PlaylistListing extends Component {
           <audio ref={this.audio} onPlay={this.onPlay} onPause={this.onPause} onEnded={(e) => {
             this.playNext();
             e.target.play();
-          }} controls src={BASE_URL + '/file/' + this.props.songs[this.state.songIndex]} />
+          }} controls src={this.props.songs[this.state.songIndex] ? BASE_URL + '/file/' + this.props.songs[this.state.songIndex] : ''} />
         </td>
         <td>
           <button onClick={this.playNext} className='btn btn-light'>Next</button>
